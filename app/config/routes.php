@@ -6,20 +6,6 @@ return function(){
 	
 	$router = new Router();
 
-<<<<<<< HEAD
-=======
-    //default route
-    /*$router->add('/:controller/:action/:params', array(
-        'controller' => 1, 'action' => 2, 'params' => 3
-    ));
-    $router->add('/:controller/:action', array(
-        'controller' => 1, 'action' => 2
-    ));
-    $router->add('/:controller', array(
-        'controller' => 1
-    ));*/
->>>>>>> 67f717524ae5c826e1f54a16de4ae4c16b92953f
-
 //GET VERB - GET ELEMENT
     //Get elemets of relationship. Ex: /department/2/user
     $router->addGet('/:controller/:int/([a-zA-Z0-9_-]+)', array(
