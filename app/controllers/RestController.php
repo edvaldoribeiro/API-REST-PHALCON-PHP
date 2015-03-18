@@ -7,10 +7,6 @@ use Phalcon\Mvc\Dispatcher;
 
 class RestController extends \Phalcon\Mvc\Controller
 {
-    /**
-    *  Model's namespace
-    */
-    private $namespace = "Atendimento\Api\Models\\";
 
     /**
     * Model's name is registered from controller via parameter
