@@ -33,11 +33,13 @@ From framework installation until your database crud
   
 5. Set the access configuration of your database in app/config/config.php
   
-  `'adapter'     => 'Mysql',    
-   'host'        => 'localhost',  
-   'username'    => 'root',  
-   'password'    => 'root',  
-   'dbname'      => 'example'`  
+    `'database' => array(`  
+    `   'adapter'     => 'Mysql',`  
+    `   'host'        => 'localhost',`  
+    `   'username'    => 'root',`  
+    `   'password'    => 'root',`  
+    `   'dbname'      => 'example',`  
+    `),`  
    
 6. Within the project execute the follow command (with phalcon dev tools) for export your database in models
   
@@ -45,7 +47,7 @@ From framework installation until your database crud
 
     For the relationships works well your tables need to be setted with relationships correted. In my dev tools version the relationships are not being mapped in models just with command line above. To fix this, after you run the command above just open http://localhost/API-REST-PHALCON-PHP/webtools.php, select the option all in "Table name" and mark the cheboxes "Define Relations", "Force" and click generate. All of your models will be updated with relationships.
     
-7. Now just generate the empty controllers with same name of models, like the example below:
+7. Now just generate the empty controllers with same name of models, like the example below, using phalcon dev tools:
 
     `phalcon controller User --base-class=RestController`  
     `phalcon controller Department --base-class=RestController`  
