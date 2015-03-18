@@ -93,10 +93,10 @@ class RestController extends \Phalcon\Mvc\Controller
     * Method Http accept: GET
     * Search data with field/value passed in parameter
     * 
-    * Ex : url: /api/usuario/search/USUNome/edvaldo/USUEmail/edvaldo2107@gmail.com/order/USUNome
-    *      sql generated: select * from USUUsuario where USUNome='edvaldo' and USUEmail='edvaldo2107@gmail.com' order by USUNome
-    * Ex2 : url: /api/usuario/search/DEPCodigo/(IN)1,2/order/USUNome
-    *      sql generated: select * from USUUsuario where DEPCodigo in (1,2) order by USUNome
+    * Ex : url: /user/search/name/edvaldo/email/edvaldo2107@gmail.com/order/name
+    *      sql generated: select * from user where name='edvaldo' and email='edvaldo2107@gmail.com' order by name
+    * Ex2 : url: /user/search/id_department/(IN)1,2/order/name
+    *      sql generated: select * from user where id_department in (1,2) order by name
     */
     public function searchAction()
     {
