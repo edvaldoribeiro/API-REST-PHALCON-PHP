@@ -33,13 +33,13 @@ From framework installation until your database crud
   
 5. Set the access configuration of your database in app/config/config.php
   
-    `'database' => array(`  
-    `   'adapter'     => 'Mysql',`  
-    `   'host'        => 'localhost',`  
-    `   'username'    => 'root',`  
-    `   'password'    => 'root',`  
-    `   'dbname'      => 'example',`  
-    `),`  
+        'database' => array(
+            'adapter'     => 'Mysql',` 
+            'host'        => 'localhost',
+            'username'    => 'root',
+            'password'    => 'root',  
+            'dbname'      => 'example',
+        ) 
    
 6. Within the project execute the follow command (with phalcon dev tools) for export your database in models
   
