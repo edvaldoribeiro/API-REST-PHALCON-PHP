@@ -1,8 +1,11 @@
 # Phalcon API Rest
 This is a API Rest Project based in [Apigee Best Practices](http://apigee.com/) using the [Phalcon PHP Framework](http://phalconphp.com) (The fastest
 PHP Framework)
+
+Complete crud of all tables of your database (including relationships), just point the database and generate models
+
 ## Get Started
-Install and configure phalcon framework
+From framework installation until your database crud 
 
 1. [Install Phalcon Framework](http://phalconphp.com/en/download/windows)
 2. [Install Phalcon Developer Tools](http://phalconphp.com/en/download/tools) - This is a dev tool helpful for phalcon php developers
