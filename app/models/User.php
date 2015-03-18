@@ -30,8 +30,9 @@ class User extends \Phalcon\Mvc\Model
     public $id_department;
     public function initialize()
     {
-        $this->belongsTo('id_department', 'Department', 'id', NULL);
+        $this->belongsTo('id_department', 'Department', 'id', array('foreignKey' => true));
     }
+    
     public function validation()
     {
 

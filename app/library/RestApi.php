@@ -5,7 +5,7 @@ use Phalcon\Mvc\Model\Resultset;
 use Phalcon\DI;
 use Phalcon\Mvc\Dispatcher;
 
-class RestController extends \Phalcon\Mvc\Controller
+abstract class RestApi
 {
     /**
     *  Model's namespace
@@ -20,7 +20,7 @@ class RestController extends \Phalcon\Mvc\Controller
     /**
     * Model's name of relationship model
     */
-    private $relationship=null;
+    private $relationshipName=null;
 
     /**
     * Name of controller is passed in parameter 
@@ -42,13 +42,54 @@ class RestController extends \Phalcon\Mvc\Controller
     */
     private $params;
 
-    public function initialize()
+    public function __construct()
     {
-    	//print_r($this->dispatcher->getParams());exit;
-    	$this->controllerName = $this->dispatcher->getControllerName();//controller
-    	$this->modelName = $this->controllerName;//model
-		$this->id = $this->dispatcher->getParam("id");//id
-		$this->relationship = $this->dispatcher->getParam("relationship");//relationship
+    	$di = new DI();
+
+		$dispatcher = new Dispatcher();
+		print_r($dispatcher->getControllerName() );exit;
+
+        //$this->params = $this->dispatcher->getParams();
+ //print_r($this->params);exit;
+
+       
+        //verifying if logged
+        /*$this->authenticate->isLogged("blabla", 2); 
+
+        $this->controllerName = strtolower($this->params[1]);
+        $this->relationshipName = array_key_exists(3, $this->params) && $this->params[2]!="search" ? strtolower($this->params[3]) : null;
+        $this->id = isset($this->params["id"]) ? $this->params["id"] : null;
+
+        $this->setModelName();   */         
+        
+    }
+
+    /**
+    * Define main's model name and model's relationship
+    */
+    public function setModelName()
+    {
+        $config = include __DIR__ . "/../config/config.php";
+
+        //set controller name
+        $controllerName = $this->controllerName;
+        $this->controllerName = $config->models->$controllerName;
+
+        //set relationship if exists
+        if ( $this->relationshipName!=null ){
+            $relationshipName = $this->relationshipName;
+            //the relationship model must have one slash (/) before
+            $this->relationshipName = "\\" . $this->namespace . $config->models->$relationshipName;
+        }
+
+        //get the 3 pre chars of name's model
+        $pre = ucfirst(substr($config->models->$controllerName, 0, 3));
+
+        //name of primary key
+        $this->key = strtoupper($pre) . "Codigo";
+
+        //model name
+        $this->modelName = $this->namespace . $this->controllerName;
     }
 
 
@@ -58,16 +99,17 @@ class RestController extends \Phalcon\Mvc\Controller
     */
     public function listAction()
     {
+    	echo "listing pai...";exit;
         $response = new Response();
         $modelName = $this->modelName;
 
         //data of more models (relationship)
-        if ( $this->relationship!=null ){
+        if ( $this->relationshipName!=null ){
             $data = $modelName::findFirst( ($this->id) ? ($this->key = $this->id) : null );
 
-			$relationship = $this->relationship;
+			$relationshipName = $this->relationshipName;
             
-			$data = $data->$relationship;
+			$data = $data->$relationshipName;
 
         //data of one model
         }else{
@@ -82,7 +124,7 @@ class RestController extends \Phalcon\Mvc\Controller
         }   
 
         //se for um único elemento remove os índices de cada item
-        if ($this->id && !$this->relationship) $result = $result[0];
+        if ($this->id && !$this->relationshipName) $result = $result[0];
 
         $response->setJsonContent($result);     
 
@@ -109,6 +151,7 @@ class RestController extends \Phalcon\Mvc\Controller
         for ( $i=3; $i<count($this->params); $i++ ){
             $params[$this->params[$i]] = $this->params[++$i];
         }
+//print_r($params);exit;
 
         //building the query        
         $query = '$model = \\' . $modelName . "::query()";        
@@ -127,7 +170,10 @@ class RestController extends \Phalcon\Mvc\Controller
             }
         }
         $query .= "->execute();";
+//echo  "<p>".$query."</p>";
         eval($query);
+
+
 
         //extracting data from resultset after query executed
         $model->setHydrateMode(Resultset::HYDRATE_ARRAYS);
@@ -135,6 +181,7 @@ class RestController extends \Phalcon\Mvc\Controller
         foreach ($model as $key => $value) {
            $result[] = $value;
         }
+//print_r($result);
     
         $response->setJsonContent($result);     
 
@@ -232,4 +279,3 @@ class RestController extends \Phalcon\Mvc\Controller
     }
 
 }
-
