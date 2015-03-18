@@ -47,7 +47,8 @@ From framework installation until your database crud
     
 7. Now just generate the empty controllers with same name of models, like the example below:
 
-    `phalcon controller User --base-class=RestController`
+    `phalcon controller User --base-class=RestController`  
+    `phalcon controller Department --base-class=RestController`  
 
     It's very important use the param --base-class to extends the RestController, because all crud are in there. If you need create another response for any part of your crud, just implement the action in desired controller overriding the RestController method. 
    
