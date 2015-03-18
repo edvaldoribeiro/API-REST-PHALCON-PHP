@@ -2,7 +2,7 @@
 This is a API Rest Project based in [Apigee Best Practices](http://apigee.com/about/resources/ebooks/web-api-design) using the [Phalcon PHP Framework](http://phalconphp.com) (The fastest
 PHP Framework)
 
-Complete crud of all tables of your database (including relationships), just point the database and generate models
+Complete CRUD (Create, Read, Update, Delete) of all tables of your database (including relationships), just point the database and generate models. All communication response/request with JSON.
 
 ### Example:
 
