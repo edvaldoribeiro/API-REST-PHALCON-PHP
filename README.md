@@ -24,12 +24,15 @@ From framework installation until your database crud
 
     `git clone https://github.com/edvaldoribeiro/API-REST-PHALCON-PHP.git`
     
-4. Remove the examples of controllers and models
+4. Remove the examples of controllers and models. 
 
   `app/controllers/UserController.php`  
   `app/controllers/DepartamentController.php`  
   `app/models/User.php`  
-  `app/models/Department.php`
+  `app/models/Department.php`  
+  
+  DB example use for tests
+  `/example.sql`
   
 5. Set the access configuration of your database in app/config/config.php
   
