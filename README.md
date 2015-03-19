@@ -29,7 +29,7 @@ From framework installation until your database crud
   `app/controllers/UserController.php`  
   `app/controllers/DepartamentController.php`  
   `app/models/User.php`  
-  `app/models/Department.php`
+  `app/models/Department.php`  
   `example.sql`
   
 5. Set the access configuration of your database in app/config/config.php
