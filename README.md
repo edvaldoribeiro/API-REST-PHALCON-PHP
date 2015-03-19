@@ -45,7 +45,7 @@ From framework installation until your database crud
   
   `phalcon --all-models`  
 
-    For the relationships works well your tables need to be setted with relationships correted. In my dev tools version the relationships are not being mapped in models just with command line above. To fix this, after you run the command above just open http://localhost/API-REST-PHALCON-PHP/webtools.php, select the option all in "Table name" and mark the cheboxes "Define Relations", "Force" and click generate. All of your models will be updated with relationships.
+    For the relationships works well your tables need to be setted with relationships correted. In my dev tools version the relationships are not being mapped in models just with command line above. To fix this, after you run the command above just open http://localhost/API-REST-PHALCON-PHP/webtools.php (case error, alter path of devtols in public/webtools.config.php), select the option all in "Table name" and mark the cheboxes "Define Relations", "Force" and click generate. All of your models will be updated with relationships.
     
 7. Now just generate the empty controllers with same name of models, like the example below, using phalcon dev tools:
 
