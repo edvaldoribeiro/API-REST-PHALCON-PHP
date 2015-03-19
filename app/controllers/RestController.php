@@ -29,11 +29,6 @@ class RestController extends \Phalcon\Mvc\Controller
     private $id;
 
     /**
-    * Name of primary key field of model
-    */
-    private $key;
-
-    /**
     * Parameters
     */
     private $params;
@@ -59,7 +54,7 @@ class RestController extends \Phalcon\Mvc\Controller
 
         //data of more models (relationship)
         if ( $this->relationship!=null ){
-            $data = $modelName::findFirst( ($this->id) ? ($this->key = $this->id) : null );
+            $data = $modelName::findFirst( ($this->id) ? $this->id : null );
 
 			$relationship = $this->relationship;
             
@@ -67,7 +62,7 @@ class RestController extends \Phalcon\Mvc\Controller
 
         //data of one model
         }else{
-            $data = $modelName::find( ($this->id) ? ($this->key = $this->id) : null );
+            $data = $modelName::find( ($this->id) ? $this->id : null );
         }      
 
         //extracting data to array
@@ -146,52 +141,65 @@ class RestController extends \Phalcon\Mvc\Controller
         $response = new Response();
         $modelName = $this->modelName;      
         $model = new $modelName();
+        $util = new Util();
+        $data = array();
 
         //get data
-        $data = get_object_vars($this->request->getJsonRawBody());
+        $temp = $util->objectToArray($this->request->getJsonRawBody());
 
-        //verify if any value is date (CURRENT_DATE, CURRENT_DATETIME), if it was replace for current date
+        //verify if exist more than one element
+        if ( $util->existSubArray($temp) )
+            $data = $temp;
+        else
+            $data[0] = $temp;
+
+
+        //scroll through the arraay data and make the action save/update
         foreach ($data as $key => $value) {
-            if ( $value=="CURRENT_DATE" ){
-                $now = new \DateTime();
-                $data[$key] =  $now->format('Y-m-d'); 
-            }else if ( $value=="CURRENT_DATETIME" ){
-                $now = new \DateTime();
-                $data[$key] =  $now->format('Y-m-d H:i:s'); 
+
+             //verify if any value is date (CURRENT_DATE, CURRENT_DATETIME), if it was replace for current date
+            foreach ($value as $k => $v) {
+                if ( $v=="CURRENT_DATE" ){
+                    $now = new \DateTime();
+                    $value[$k] =  $now->format('Y-m-d'); 
+                }else if ( $v=="CURRENT_DATETIME" ){
+                    $now = new \DateTime();
+                    $value[$k] =  $now->format('Y-m-d H:i:s'); 
+                }
             }
-        }
 
-        //if have param then update
-        if ( isset($this->id) )
-            $model = $modelName::findFirst($this->id);
-        
-        if ( $model->save($data) ){
-            $key = $this->key;
-            $dataResponse = get_object_vars($model);
+            //if have param then update
+            if ( isset($this->id) ) //if passed by url
+                $model = $modelName::findFirst($this->id);
+            
+            if ( $model->save($value) ){
+                $dataResponse = get_object_vars($model);
 
-            //update
-            if ( isset($this->id) ){
-                $response->setJsonContent(array('status' => 'OK'));
-            //insert
+                //update
+                if ( isset($this->id) ){
+                    $response->setJsonContent(array('status' => 'OK'));
+                //insert
+                }else{
+                    $response->setStatusCode(201, "Created");
+                    $response->setJsonContent(array(
+                        'status' => 'OK',
+                        'data' => array_merge($value, $dataResponse) //merge form data with return db
+                    ));
+                }
+
             }else{
-                $response->setStatusCode(201, "Created");
+                $errors = array();
+                foreach( $model->getMessages() as $message )
+                    $errors[] = $message->getMessage();
+
                 $response->setJsonContent(array(
-                    'status' => 'OK',
-                    $key => $model->$key,
-                    'data' => array_merge($data, $dataResponse) //merge form data with return db
+                    'status' => 'ERROR',
+                    'messages' => $errors
                 ));
             }
 
-        }else{
-            $errors = array();
-            foreach( $model->getMessages() as $message )
-                $errors[] = $message->getMessage();
-
-            $response->setJsonContent(array(
-                'status' => 'ERROR',
-                'messages' => $errors
-            ));
-        }
+  
+        }//end foreach
 
         return $response;
     }
