@@ -73,7 +73,7 @@ class RestController extends \Phalcon\Mvc\Controller
 
         //data of more models (relationship)
         if ( $this->relationship!=null ){
-            $data = $modelName::findFirst( ($this->id) ? $this->id : null );
+            $data = $modelName::findFirst( $this->id );
 
 			$relationship = $this->relationship;
             
@@ -81,7 +81,7 @@ class RestController extends \Phalcon\Mvc\Controller
 
         //data of one model
         }else{
-            $data = $modelName::find( ($this->id) ? $this->id : null );
+            $data = $modelName::find();
         }      
 
         return $this->extractData($data);
