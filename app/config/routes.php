@@ -17,7 +17,7 @@ return function(){
     //Get one element. Ex: /user/2
     $router->addGet('/:controller/:int', array(
         'controller' => 1,
-        'action'     => "list",
+        'action'     => "get",
         'id'         => 2
     ));
     //Get all elements. Ex: /user

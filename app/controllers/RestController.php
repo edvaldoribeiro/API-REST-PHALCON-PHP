@@ -33,6 +33,12 @@ class RestController extends \Phalcon\Mvc\Controller
     */
     private $params;
 
+    /**
+     * Response object
+     * @var Phalcon\Http\Response
+     */
+    private $reponse;
+
     public function initialize()
     {
     	//print_r($this->dispatcher->getParams());exit;
@@ -40,16 +46,29 @@ class RestController extends \Phalcon\Mvc\Controller
     	$this->modelName = $this->controllerName;//model
 		$this->id = $this->dispatcher->getParam("id");//id
 		$this->relationship = $this->dispatcher->getParam("relationship");//relationship
+
+        $this->response = new Response();
+    }
+
+    /**
+     * Method Http accept: GET
+     * @return JSON Retrive data by id
+     */
+    public function getAction(){
+        $modelName = $this->modelName;
+
+        $data = $modelName::find( $this->id );
+
+        return $this->extractData($data);
     }
 
 
     /**
     * Method Http accept: GET
-    * Retrive datas, if exists param return only data required
+     * @return JSON Retrive all data, with and without relationship
     */
     public function listAction()
     {
-        $response = new Response();
         $modelName = $this->modelName;
 
         //data of more models (relationship)
@@ -65,6 +84,15 @@ class RestController extends \Phalcon\Mvc\Controller
             $data = $modelName::find( ($this->id) ? $this->id : null );
         }      
 
+        return $this->extractData($data);
+    }
+
+    /**
+     * Extract collection data to json
+     * @param  Objcet     data object collecion with data
+     * @return JSON       data in JSON
+     */
+    private function extractData($data){
         //extracting data to array
         $data->setHydrateMode(Resultset::HYDRATE_ARRAYS);        
         $result = array();
@@ -75,9 +103,9 @@ class RestController extends \Phalcon\Mvc\Controller
         //se for um único elemento remove os índices de cada item
         if ($this->id && !$this->relationship) $result = $result[0];
 
-        $response->setJsonContent($result);     
+        $this->response->setJsonContent($result);     
 
-        return $response;
+        return $this->response;
     }
 
     /**
@@ -91,7 +119,6 @@ class RestController extends \Phalcon\Mvc\Controller
     */
     public function searchAction()
     {
-        $response = new Response();
         //get model name
         $modelName = $this->modelName;
 
@@ -127,9 +154,9 @@ class RestController extends \Phalcon\Mvc\Controller
            $result[] = $value;
         }
     
-        $response->setJsonContent($result);     
+        $this->response->setJsonContent($result);     
 
-        return $response;
+        return $this->response;
     }
 
     /**
@@ -138,7 +165,6 @@ class RestController extends \Phalcon\Mvc\Controller
     */
     public function saveAction()
     {
-        $response = new Response();
         $modelName = $this->modelName;      
         $model = new $modelName();
         $util = new Util();
@@ -177,11 +203,11 @@ class RestController extends \Phalcon\Mvc\Controller
 
                 //update
                 if ( isset($this->id) ){
-                    $response->setJsonContent(array('status' => 'OK'));
+                    $this->response->setJsonContent(array('status' => 'OK'));
                 //insert
                 }else{
-                    $response->setStatusCode(201, "Created");
-                    $response->setJsonContent(array(
+                    $this->response->setStatusCode(201, "Created");
+                    $this->response->setJsonContent(array(
                         'status' => 'OK',
                         'data' => array_merge($value, $dataResponse) //merge form data with return db
                     ));
@@ -192,7 +218,7 @@ class RestController extends \Phalcon\Mvc\Controller
                 foreach( $model->getMessages() as $message )
                     $errors[] = $message->getMessage();
 
-                $response->setJsonContent(array(
+                $this->response->setJsonContent(array(
                     'status' => 'ERROR',
                     'messages' => $errors
                 ));
@@ -201,7 +227,7 @@ class RestController extends \Phalcon\Mvc\Controller
   
         }//end foreach
 
-        return $response;
+        return $this->response;
     }
 
     /**
@@ -209,7 +235,6 @@ class RestController extends \Phalcon\Mvc\Controller
     */
     public function deleteAction()
     {
-        $response = new Response();
         $modelName = $this->modelName;
 
         $model = $modelName::findFirst($this->id);
@@ -217,22 +242,22 @@ class RestController extends \Phalcon\Mvc\Controller
         //delete if exists the object
         if ( $model!=false ){
             if ( $model->delete() == true ){
-                $response->setJsonContent(array('status' => "OK"));
+                $this->response->setJsonContent(array('status' => "OK"));
             }else{
-               $response->setStatusCode(409, "Conflict");
+               $this->response->setStatusCode(409, "Conflict");
 
                $errors = array();
                foreach( $model->getMessages() as $message )
                     $errors[] = $message->getMessage();
 
-               $response->setJsonContent(array('status' => "ERROR", 'messages' => $erros));
+               $this->response->setJsonContent(array('status' => "ERROR", 'messages' => $erros));
             }
         }else{
-            $response->setStatusCode(409, "Conflict");
-            $response->setJsonContent(array('status' => "ERROR", 'messages' => array("O elemento não existe")));
+            $this->response->setStatusCode(409, "Conflict");
+            $this->response->setJsonContent(array('status' => "ERROR", 'messages' => array("O elemento não existe")));
         }
 
-        return $response;
+        return $this->response;
     }
 
 }
