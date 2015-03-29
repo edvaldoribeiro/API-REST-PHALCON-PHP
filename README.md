@@ -31,7 +31,7 @@ From framework installation until your database crud
   `app/models/User.php`  
   `app/models/Department.php`  
   
-  DB example use for tests
+  DB example used for tests
   `/example.sql`
   
 5. Set the access configuration of your database in app/config/config.php
