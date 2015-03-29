@@ -8,7 +8,7 @@ Complete CRUD (Create, Read, Update, Delete) of all tables of your database (inc
 
 `GET /user` return all users  
 `GET /user/1` return user with id 1  
-`GET /department/1/user` return all user belonging to the departament with id 1  
+`GET /department/1/user` return all user belonging the departament with id 1  
 `POST /user` insert user  
 `PUT /user/1` update the user with id 1  
 `DELETE /user/1` delete user with id 1  
