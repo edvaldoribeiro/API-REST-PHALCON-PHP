@@ -2,9 +2,13 @@
 
 use Phalcon\Mvc\Router;
 
-return function(){
-	
 	$router = new Router();
+
+    //main route
+    $router->add("/", array(
+        'controller' => 'index',
+        'action' => 'index'
+    ));
 
 //GET VERB - GET ELEMENT
     //Get elemets of relationship. Ex: /department/2/user
@@ -51,7 +55,15 @@ return function(){
     ));
 
 
-    return $router;
-}
+//not founded route
+    $router->notFound(array(
+        'controller' => 'error',
+        'action' => 'page404'        
+    ));
 
-?>
+    $router->setDefaults(array(
+        'controller' => 'index',
+        'action' => 'index'
+    ));
+
+return $router;

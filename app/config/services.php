@@ -16,7 +16,11 @@ $di = new FactoryDefault();
 /**
  * Registering a router
  */
-$di['router'] = require 'routes.php';
+$di->set('router', function(){
+    require 'routes.php';
+    return $router;
+})
+;
 
 /**
  * The URL component is used to generate all kind of urls in the application
@@ -51,8 +55,12 @@ $di->set('modelsMetadata', function () {
 /**
  * Setting up the view component
  */
-$di->set('view', function(){
+$di->set('view', function() use ($config){
     $view = new View();
+    $view->setViewsDir($config->application->viewsDir);
+    $view->registerEngines(array(
+        ".phtml" => "Phalcon\Mvc\View\Engine\Php"
+    ));
     return $view;
 });
 
