@@ -4,6 +4,9 @@ use Phalcon\Mvc\Router;
 
 	$router = new Router();
 
+    //Remove trailing slashes automatically
+    $router->removeExtraSlashes(true);
+
     //main route
     $router->add("/", array(
         'controller' => 'index',
