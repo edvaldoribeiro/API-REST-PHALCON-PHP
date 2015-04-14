@@ -250,7 +250,7 @@ class RestController extends \Phalcon\Mvc\Controller
                foreach( $model->getMessages() as $message )
                     $errors[] = $message->getMessage();
 
-               $this->response->setJsonContent(array('status' => "ERROR", 'messages' => $erros));
+               $this->response->setJsonContent(array('status' => "ERROR", 'messages' => $errors));
             }
         }else{
             $this->response->setStatusCode(409, "Conflict");
