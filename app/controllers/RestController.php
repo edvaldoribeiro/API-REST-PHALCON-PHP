@@ -37,10 +37,19 @@ class RestController extends \Phalcon\Mvc\Controller
      * Response object
      * @var Phalcon\Http\Response
      */
-    private $reponse;
+    private $response;
+
+    /**
+     * Language's messages
+     * @var array
+     */
+    private $language;
 
     public function initialize()
     {
+        //set the language
+        $this->setLanguage();
+        
     	//print_r($this->dispatcher->getParams());exit;
     	$this->controllerName = $this->dispatcher->getControllerName();//controller
     	$this->modelName = $this->controllerName;//model
@@ -48,6 +57,47 @@ class RestController extends \Phalcon\Mvc\Controller
 		$this->relationship = $this->dispatcher->getParam("relationship");//relationship
 
         $this->response = new Response();
+    }
+
+    /**
+     * set language of errors responses
+     */
+    public function setLanguage(){
+        //get the best language and all languages
+        $bestLanguage = $this->request->getBestLanguage();
+        $languages = $this->request->getLanguages();
+
+        //sort the languages for quality desc
+        foreach ($languages as $key => $row) {
+            $language[$key]  = $row['language'];
+            $quality[$key] = $row['quality'];
+        }
+        array_multisort($quality, SORT_DESC, $language, SORT_ASC, $languages);
+
+        //veriry if exists the best language
+        if ( file_exists("../app/languages/".$bestLanguage.".php") ){
+            require "../app/languages/".$bestLanguage.".php";
+
+        //if not exist best language find the first language existing
+        }else{
+            //search for the first existing language
+            $cont = 0;
+            foreach ($languages as $value) {
+                if ( file_exists("../app/languages/".$value['language'].".php") ){
+                    require "../app/languages/".$value['language'].".php";
+                }
+                else $cont++;
+            }
+
+            //if not find any language set the desfault
+            if ( $cont == count($languages) ){
+                require "../app/languages/en.php";
+            }
+
+        }
+
+        //set the messages language 
+        $this->language = $messages;
     }
 
     /**
@@ -216,7 +266,7 @@ class RestController extends \Phalcon\Mvc\Controller
             }else{
                 $errors = array();
                 foreach( $model->getMessages() as $message )
-                    $errors[] = $message->getMessage();
+                    $errors[] = $this->language[$message->getMessage()] ? $this->language[$message->getMessage()] : $message->getMessage();
 
                 $this->response->setJsonContent(array(
                     'status' => 'ERROR',
@@ -248,7 +298,7 @@ class RestController extends \Phalcon\Mvc\Controller
 
                $errors = array();
                foreach( $model->getMessages() as $message )
-                    $errors[] = $message->getMessage();
+                    $errors[] = $this->language[$message->getMessage()] ? $this->language[$message->getMessage()] : $message->getMessage();
 
                $this->response->setJsonContent(array('status' => "ERROR", 'messages' => $errors));
             }

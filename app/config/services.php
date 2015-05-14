@@ -1,12 +1,13 @@
 <?php
 
-use Phalcon\DI\FactoryDefault;
-use Phalcon\Mvc\View;
-use Phalcon\Mvc\Dispatcher;
-use Phalcon\Mvc\Url as UrlResolver;
-use Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter;
-use Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter;
-use Phalcon\Session\Adapter\Files as SessionAdapter;
+use Phalcon\DI\FactoryDefault,
+    Phalcon\Mvc\View,
+    Phalcon\Mvc\Dispatcher,
+    Phalcon\Mvc\Url as UrlResolver,
+    Phalcon\Db\Adapter\Pdo\Mysql as DbAdapter,
+    Phalcon\Mvc\Model\Metadata\Memory as MetaDataAdapter,
+    Phalcon\Session\Adapter\Files as SessionAdapter,
+    Phalcon\Translate\Adapter\NativeArray;
 
 /**
  * The FactoryDefault Dependency Injector automatically register the right services providing a full stack framework

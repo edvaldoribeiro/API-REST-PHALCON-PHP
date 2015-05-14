@@ -1,6 +1,7 @@
 <?php
 
 use Phalcon\Mvc\Model\Validator\Email as Email;
+use Phalcon\Mvc\Model\Validator\PresenceOf;
 
 class User extends \Phalcon\Mvc\Model
 {
@@ -35,12 +36,20 @@ class User extends \Phalcon\Mvc\Model
     
     public function validation()
     {
-
+        $this->validate(
+            new PresenceOf(
+                array(
+                    'field' => 'email',
+                    'message' => 'requiredEmail'
+                )
+            )
+        );
         $this->validate(
             new Email(
                 array(
                     'field'    => 'email',
                     'required' => true,
+                    'message'  => 'validEmail'
                 )
             )
         );

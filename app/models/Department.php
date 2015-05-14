@@ -18,7 +18,7 @@ class Department extends \Phalcon\Mvc\Model
     {
         $this->hasMany('id', 'User', 'id_department', array(
             'foreignKey' => array(
-                'message' => 'Department cannot be deleted bacause it\'s used on User'
+                'message' => 'errorDeleteDepartment' //'Department cannot be deleted bacause it\'s used on User'
             )
         ));
     }
